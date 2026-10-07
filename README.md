@@ -1,5 +1,7 @@
 # LumiLog
 
+[![tests](https://github.com/onSummerNight/lumilog/actions/workflows/tests.yml/badge.svg)](https://github.com/onSummerNight/lumilog/actions/workflows/tests.yml)
+
 Incident analysis for SMS gateway logs.
 
 LumiLog parses gateway logs, finds incidents with deterministic detectors, and investigates them: it compares each incident against a normal period, checks which providers and hosts were affected, collects evidence lines, and writes a Markdown incident report with likely causes and next checks.
@@ -16,6 +18,21 @@ log files ─► parser ─► SQLite store ─► detectors ─► findings
                                                incident-report.md
 ```
 
+## What you get
+
+From two hours of gateway logs, a report like this for each incident (excerpt from the [full example](examples/incident-report-offline.md)):
+
+> **1. Submit failures at provider ISAT** · 13:41 → 13:56 (15 min) · critical
+>
+> | Metric | Incident 13:41–13:56 | Normal 13:24–13:39 |
+> |---|---|---|
+> | Failed submits | 166 | 2 |
+> | Failure rate | 63.8% | 0.8% |
+> | Retries | 331 | 0 |
+> | Avg submit latency (ms) | 19,238 | 241 |
+>
+> **Likely cause** (confidence: high): Problem on the ISAT side. Failures are concentrated on ISAT (dominant error: TIMEOUT) while other providers stayed normal in the same window (TSEL 0.0%, XL 0.0%), so the gateways themselves were healthy.
+
 ## Quick start
 
 ```bash
@@ -26,8 +43,6 @@ lumilog detect  logs/sms-gateway.log             # list findings
 lumilog analyze logs/sms-gateway.log --offline   # full report, no API key needed
 pytest
 ```
-
-See [`examples/incident-report-offline.md`](examples/incident-report-offline.md) for a generated report.
 
 ### Claude mode
 
@@ -90,3 +105,7 @@ Everything a tool returns passes through `lumilog.redact`, which masks phone num
 ## License
 
 MIT
+
+---
+
+A [LumiDev](https://lumidev.online) project, built by Luminous together with Claude.
