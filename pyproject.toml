@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lumilog"
+version = "0.2.0"
+description = "Incident analysis for SMS gateway logs: deterministic detection plus an LLM investigator."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "LumiDev", email = "luminous@lumidev.online" }]
+dependencies = ["typer>=0.12"]
+
+[project.optional-dependencies]
+llm = ["anthropic>=0.40"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+lumilog = "lumilog.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
